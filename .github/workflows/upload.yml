@@ -43,6 +43,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    steps:
     - run: mkdir -p artifact/release
 
     - name: Download
