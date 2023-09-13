@@ -39,6 +39,18 @@ jobs:
         name: release-demumble
         path: release-${{ runner.os }}.zip
         if-no-files-found: error
-      
-    
 
+  release:
+    runs-on: ubuntu-latest
+
+    - run: mkdir -p artifact/release
+
+    - name: Download
+      uses: actions/download-artifact@v3
+      with:
+        name: release-demumble
+        path: artifact/release
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: artifact/release
