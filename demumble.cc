@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
         }
 
         size_t n_used = n_sym;
-        print_demangled(print_format, { cur, n_sym }, &n_used);
+        print_demangled(print_format, { cur, n_sym }, &n_used,(llvm::MSDemangleFlags)msDeFlags);
         need_separator = true;
 
         cur += n_used;
