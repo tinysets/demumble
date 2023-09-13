@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
   }
   for (int i = 1; i < argc; ++i) {
     size_t used = strlen(argv[i]);
-    print_demangled(print_format, { argv[i], used }, &used, (llvm::MSDemangleFlagsype)msDeFlags);
+    print_demangled(print_format, { argv[i], used }, &used, (llvm::MSDemangleFlags)msDeFlags);
     printf("\n");
     if (used < strlen(argv[i]))
       printf("  unused suffix: %s\n", argv[i] + used);
