@@ -1,0 +1,9 @@
+name: Starter get artifacts
+on: [workflow_dispatch]
+jobs:
+  get-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+    - id: result 
+      uses: MichaelMelena/list-artifacts@v1
+    - run: echo '${{ steps.result.outputs.artifacts }}'
