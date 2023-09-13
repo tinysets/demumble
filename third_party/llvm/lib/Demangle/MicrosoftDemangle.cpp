@@ -2411,7 +2411,10 @@ char *llvm::microsoftDemangle(std::string_view MangledName, size_t *NMangled,
 
   OutputFlags OF = OF_Default;
   if (Flags & MSDF_NoCallingConvention)
-    OF = OutputFlags(OF | OF_NoCallingConvention);
+  {
+      OF = OutputFlags(OF | OF_NoCallingConvention);
+      OF = OutputFlags(OF | OF_NoTagSpecifier);
+  }
   if (Flags & MSDF_NoAccessSpecifier)
     OF = OutputFlags(OF | OF_NoAccessSpecifier);
   if (Flags & MSDF_NoReturnType)
