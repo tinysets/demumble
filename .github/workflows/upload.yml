@@ -5,17 +5,40 @@ on: workflow_dispatch
 jobs:
   build-win:
     runs-on: ${{ matrix.os }}
-    env:
-      binFileName: demumble
+
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-    steps:
-    - name: set demumbleBinFile
-      if: ${{ runner.os=='Windows' }}
-      env:
-          binFileName: demumble.exe
 
-    - name: test
-      run: echo ${{ env.binFileName }}
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set up Ninja
+      uses: ashutoshvarma/setup-ninja@v1.1
+
+    - uses: ilammy/msvc-dev-cmd@v1.12.1
+
+    - name: CMake
+      run: |
+        cmake -GNinja .
+
+    - name: Build
+      run: |
+        ninja
+    
+    - name: Zip
+      uses: vimtor/action-zip@v1
+      with:
+        dest: release-${{ runner.os }}.zip
+        files: demumble demumble.exe
+
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-demumble
+        path: release-${{ runner.os }}.zip
+        if-no-files-found: error
       
+    
+
