@@ -46,7 +46,8 @@ tests = [
     ('demumble < asdf?x@@3HAjkl', 'asdfint xjkl\n'),
     ('demumble < asdf?x@@3Hjkl', 'asdf?x@@3Hjkl\n'),
     ('demumble ?x@@3HAjkl', 'int x\n  unused suffix: jkl\n'),
-    ('demumble -f4095 ??0S@@QEAA@$$QEAU0@@Z', 'public: __cdecl S::S(struct S &&)\n'),
+    ('demumble -f62 ??0S@@QEAA@$$QEAU0@@Z', 'public: __cdecl S::S(struct S &&)\n'),
+    # 62 = 0b111110
 ]
 
 status = 0
