@@ -1,4 +1,4 @@
-name: upload
+name: release
 
 on: workflow_dispatch
 
