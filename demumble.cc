@@ -23,14 +23,14 @@ static int print_help(FILE* out) {
 }
 
 static void print_demangled(const char* format, std::string_view s,
-                            size_t* n_used) {
+                            size_t* n_used ,MSDemangleFlags Flags = MSDF_None) {
   if (char* itanium = llvm::itaniumDemangle(s)) {
     printf(format, itanium, (int)s.size(), s.data());
     free(itanium);
   } else if (char* rust = llvm::rustDemangle(s)) {
     printf(format, rust, (int)s.size(), s.data());
     free(rust);
-  } else if (char* ms = llvm::microsoftDemangle(s, n_used, NULL)) {
+  } else if (char* ms = llvm::microsoftDemangle(s, n_used, NULL,Flags)) {
     printf(format, ms, (int)s.size(), s.data());
     free(ms);
   } else {
@@ -72,6 +72,7 @@ static char buf[8192];
 int main(int argc, char* argv[]) {
   enum { kPrintAll, kPrintMatching } print_mode = kPrintAll;
   const char* print_format = "%s";
+  int msDeFlags = 0;
   while (argc > 1 && argv[1][0] == '-') {
     if (strcmp(argv[1], "--help") == 0) {
       return print_help(stdout);
@@ -83,17 +84,24 @@ int main(int argc, char* argv[]) {
       ++argv;
       break;
     } else if (argv[1][0] == '-' && argv[1][1] != '-') {
-      for (size_t i = 1; i < strlen(argv[1]); ++i)
-        switch (argv[1][i]) {
-        case 'b': print_format = "\"%s\" (%.*s)"; break;
-        case 'h': return print_help(stdout);
-        case 'm': print_mode = kPrintMatching; break;
-        case 'u': setbuf(stdout, NULL); break;
-        default:
-          fprintf(stderr, "demumble: unrecognized option `%c' in `%s'\n",
-                  argv[1][i], argv[1]);
-          return print_help(stderr);
-        }
+      if(argv[1][1] == 'f')
+      {
+        char* argv_f = argv[1];
+        argv_f = argv_f+2;
+        msDeFlags = atoi(argv_f);
+      }else{
+        for (size_t i = 1; i < strlen(argv[1]); ++i)
+          switch (argv[1][i]) {
+          case 'b': print_format = "\"%s\" (%.*s)"; break;
+          case 'h': return print_help(stdout);
+          case 'm': print_mode = kPrintMatching; break;
+          case 'u': setbuf(stdout, NULL); break;
+          default:
+            fprintf(stderr, "demumble: unrecognized option `%c' in `%s'\n",
+                    argv[1][i], argv[1]);
+            return print_help(stderr);
+          }
+      }
     } else {
       fprintf(stderr, "demumble: unrecognized option `%s'\n", argv[1]);
       return print_help(stderr);
@@ -103,7 +111,7 @@ int main(int argc, char* argv[]) {
   }
   for (int i = 1; i < argc; ++i) {
     size_t used = strlen(argv[i]);
-    print_demangled(print_format, { argv[i], used }, &used);
+    print_demangled(print_format, { argv[i], used }, &used, msDeFlags);
     printf("\n");
     if (used < strlen(argv[i]))
       printf("  unused suffix: %s\n", argv[i] + used);
