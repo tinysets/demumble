@@ -1,7 +1,7 @@
-name: Starter get artifacts
+name: list-artifacts
 on: [workflow_dispatch]
 jobs:
-  get-artifacts:
+  list-artifacts:
     runs-on: ubuntu-latest
     steps:
     - id: result 
