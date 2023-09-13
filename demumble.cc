@@ -23,7 +23,7 @@ static int print_help(FILE* out) {
 }
 
 static void print_demangled(const char* format, std::string_view s,
-                            size_t* n_used ,MSDemangleFlags Flags = MSDF_None) {
+                            size_t* n_used ,llvm::MSDemangleFlags Flags = llvm::MSDF_None) {
   if (char* itanium = llvm::itaniumDemangle(s)) {
     printf(format, itanium, (int)s.size(), s.data());
     free(itanium);
@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
   }
   for (int i = 1; i < argc; ++i) {
     size_t used = strlen(argv[i]);
-    print_demangled(print_format, { argv[i], used }, &used, msDeFlags);
+    print_demangled(print_format, { argv[i], used }, &used, (llvm::MSDemangleFlagsype)msDeFlags);
     printf("\n");
     if (used < strlen(argv[i]))
       printf("  unused suffix: %s\n", argv[i] + used);
